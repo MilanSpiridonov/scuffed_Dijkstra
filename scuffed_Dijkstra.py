@@ -39,11 +39,6 @@ class Node:
                 if n.x == self.x + 1 and n.y == self.y + 1:
                     avN.append(n)
         return avN
-    def costToNode(self,node):
-        if self.currCost < 99999999999:
-            return self.getCost(node) + self.currCost
-        else:
-            return self.getCost(node) # +0
 
 #Populates nodes List
 nodes = []
