@@ -118,9 +118,12 @@ def Dijkstra(start, end):
         if stop:
             break
     pStr = ''
-    for n in path:
-        pStr += '{} -'.format(n.id)
-    print(pStr)
+    print("Path between node {} and node {} is:".format(start.id, end.id))
+    path.reverse()
+    for n in range(len(path)):
+        if n < len(path) - 1 and n != 0:
+            pStr += '{} - '.format(path[n].id)
+    print(pStr + str(path[len(path)-1].id))
 
 
 nodes[5].blocked = True
