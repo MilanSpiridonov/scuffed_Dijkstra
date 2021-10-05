@@ -55,7 +55,7 @@ for i in range(-5,0):
 infi = 99999999999999
 
 
-def calc(start, end, nodeL):
+def calc(start, end, nodeL): #this func weighs all the nodes, doesn't support recalculation yet
     #initialize unexplored list, fill it up and set the starting currCost of nodes to infi
     unexplored = []
     explored = []
@@ -93,7 +93,8 @@ def calc(start, end, nodeL):
                 unexplored.remove(n)
     nodes = explored.copy()
 
-def Dijkstra(start, end):
+def Dijkstra(start, end): # starts from the goal node and picks the cheapest viable node, which ultimately returns the ~shortest~ path
+                            # the container gets reversed at the end, so the path is actually from start-end
     currNode = end
     path = []
     path.append(currNode)
@@ -130,8 +131,8 @@ nodes[5].blocked = True
 nodes[6].blocked = True
 nodes[11].blocked = True
 nodes[12].blocked = True
-calc(nodes[0], nodes[len(nodes)-1],nodes)
-Dijkstra(nodes[0], nodes[10])
+calc(nodes[0], nodes[len(nodes)-1],nodes) #Calculate the weights for all of the nodes from the earliest node to the end node
+Dijkstra(nodes[0], nodes[10]) #Prints out the calculated path ;)
 
 ### IT ACTUALLY FUCKING WORKS???!!!?!!???!!????!!??!??????!
 ###The algo works with walls(fina-fucking-lly) 
@@ -140,10 +141,6 @@ Dijkstra(nodes[0], nodes[10])
     
     
 ##Old logs:
-
-#call this function with starting node and goal node to calculate weight per node
-#calc(nodes[0], nodes[len(nodes)-1])
-
 
 ### <Update>
 ### Calc() officially sets the cost of movement from start for each and every node,
