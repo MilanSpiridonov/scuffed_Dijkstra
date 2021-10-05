@@ -121,10 +121,11 @@ def Dijkstra(start, end): # starts from the goal node and picks the cheapest via
     pStr = ''
     print("Path between node {} and node {} is:".format(start.id, end.id))
     path.reverse()
+    pStr += str(path[0].id)
     for n in range(len(path)):
-        if n < len(path) - 1 and n != 0:
-            pStr += '{} - '.format(path[n].id)
-    print(pStr + str(path[len(path)-1].id))
+        if n != 0:
+            pStr += ' - {}'.format(path[n].id)
+    print(pStr)
 
 
 nodes[5].blocked = True
