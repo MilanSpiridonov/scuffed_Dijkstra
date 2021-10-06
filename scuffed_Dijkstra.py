@@ -1,8 +1,7 @@
-import math
+import math, time
+
 class Node:
     currCost = float('inf')
-    prevNode = None
-    lastNodeIndex = None
     def __init__(self,x,y,id,blocked):
         self.x = x
         self.y = y
@@ -40,17 +39,32 @@ class Node:
                     avN.append(n)
         return avN
 
+
+#Set grid W and H
+MAX_WIDTH = 5
+MAX_HEIGHT = 5
+
 #Populates nodes List
 nodes = []
 ctr = 0
-for i in range(-5,0):
-    for j in range(5):
+for i in range(-MAX_HEIGHT,0):
+    for j in range(MAX_WIDTH):
         ctr += 1
         nodes.append(Node(j+1,abs(i),ctr,False))
+
+#Set start-and endNodes !!!Dont forget that it's (node - 1) !!! IT'S A LIST !!!
+startNode = 1
+endNode = 25
+#Define which nodes will be blocked off
+nodes[1].blocked = True
+nodes[6].blocked = True
+nodes[12].blocked = True
+nodes[17].blocked = True
+nodes[23].blocked = True
+
+
 infi = 99999999999999
-
-
-def calc(start, end, nodeL): #this func weighs all the nodes, doesn't support recalculation yet
+def calc(start, end, nodeL):
     #initialize unexplored list, fill it up and set the starting currCost of nodes to infi
     unexplored = []
     explored = []
@@ -88,9 +102,9 @@ def calc(start, end, nodeL): #this func weighs all the nodes, doesn't support re
                 unexplored.remove(n)
     nodes = explored.copy()
 
+    
 def Dijkstra(start, end): # starts from the goal node and picks the cheapest viable node, which ultimately returns the ~shortest~ path
-                            # the container gets reversed at the end, so the path is actually from start-end
-    currNode = end
+                            # the container gets reversed at the end, so the path is actually from start-end    currNode = end
     path = []
     path.append(currNode)
     for n in currNode.availableNodes():
@@ -122,13 +136,9 @@ def Dijkstra(start, end): # starts from the goal node and picks the cheapest via
             pStr += ' - {}'.format(path[n].id)
     print(pStr)
 
-
-nodes[5].blocked = True
-nodes[6].blocked = True
-nodes[11].blocked = True
-nodes[12].blocked = True
-calc(nodes[0], nodes[len(nodes)-1],nodes) #Calculate the weights for all of the nodes from the earliest node to the end node
-Dijkstra(nodes[0], nodes[10]) #Prints out the calculated path ;)
+#nodes[8].blocked = True <-- This indicates which nodes are blocked off
+calc(nodes[startNode-1], nodes[len(nodes)-1],nodes)
+Dijkstra(nodes[startNode-1], nodes[endNode-1])
 
 ### IT ACTUALLY FUCKING WORKS???!!!?!!???!!????!!??!??????!
 ###The algo works with walls(fina-fucking-lly) 
@@ -137,6 +147,10 @@ Dijkstra(nodes[0], nodes[10]) #Prints out the calculated path ;)
     
     
 ##Old logs:
+
+#call this function with starting node and goal node to calculate weight per node
+#calc(nodes[0], nodes[len(nodes)-1])
+
 
 ### <Update>
 ### Calc() officially sets the cost of movement from start for each and every node,
