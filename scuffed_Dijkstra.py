@@ -1,5 +1,3 @@
-import math, time
-
 class Node:
     currCost = float('inf')
     def __init__(self,x,y,id,blocked):
@@ -18,6 +16,11 @@ class Node:
             return 14
         else:
             return 10
+    def getCostHotFix(self,node):
+        if self.isDiag(node):
+            return 10
+        else:
+            return 14
     def availableNodes(self): #returns a list of adjascent nodes
         avN = []
         for n in nodes:
@@ -38,30 +41,16 @@ class Node:
                 if n.x == self.x + 1 and n.y == self.y + 1:
                     avN.append(n)
         return avN
-
-
-#Set grid W and H
-MAX_WIDTH = 5
-MAX_HEIGHT = 5
+nodes = [] #This list contains all the nodes, thats basically the grid 
 
 #Populates nodes List
-nodes = []
-ctr = 0
-for i in range(-MAX_HEIGHT,0):
-    for j in range(MAX_WIDTH):
-        ctr += 1
-        nodes.append(Node(j+1,abs(i),ctr,False))
-
-#Set start-and endNodes !!!Dont forget that it's (node - 1) !!! IT'S A LIST !!!
-startNode = 1
-endNode = 25
-#Define which nodes will be blocked off
-nodes[1].blocked = True
-nodes[6].blocked = True
-nodes[12].blocked = True
-nodes[17].blocked = True
-nodes[23].blocked = True
-
+def populateGrid(w,h):
+    nodes = []
+    ctr = 0
+    for i in range(-h,0):
+        for j in range(w):
+            ctr += 1
+            nodes.append(Node(j+1,abs(i),ctr,False))
 
 infi = 99999999999999
 def calc(start, end, nodeL):
@@ -100,11 +89,15 @@ def calc(start, end, nodeL):
                 n.currCost = cheapestNode.currCost + n.getCost(cheapestNode)
                 explored.append(n)
                 unexplored.remove(n)
-    nodes = explored.copy()
+    #nodes = explored.copy()
 
     
 def Dijkstra(start, end): # starts from the goal node and picks the cheapest viable node, which ultimately returns the ~shortest~ path
                             # the container gets reversed at the end, so the path is actually from start-end    currNode = end
+    calc(nodes[startNode-1], nodes[len(nodes)-1],nodes)
+    if start.blocked == True or end.blocked == True:
+        return "Either start or end node are blocked, making the pathfinding process unviable!"
+    currNode = end
     path = []
     path.append(currNode)
     for n in currNode.availableNodes():
@@ -114,19 +107,28 @@ def Dijkstra(start, end): # starts from the goal node and picks the cheapest via
                 currNode = n
             #print(currNode.id)
     path.append(currNode)
+    found = False
     for k in range(100):
         stop = False
         for n in currNode.availableNodes():
+            if n.currCost == infi:
+                n.currCost = currNode.currCost - currNode.getCostHotFix(n)
             if n.currCost < currNode.currCost:
                 if n.blocked == False:
+                    #print("{}".format(n.id))
                     currNode = n
                     path.append(currNode)
-                #print(currNode.id)
                     break
             if currNode.id == start.id:
                 stop = True
         if stop:
+            found = True
             break
+    if found:
+        print("Path has been found!")
+    else:
+        print("The program has failed at finding a path, either the complexity limit was exceeded, or a walkable path was not found!")
+        return ""
     pStr = ''
     print("Path between node {} and node {} is:".format(start.id, end.id))
     path.reverse()
@@ -134,28 +136,19 @@ def Dijkstra(start, end): # starts from the goal node and picks the cheapest via
     for n in range(len(path)):
         if n != 0:
             pStr += ' - {}'.format(path[n].id)
-    print(pStr)
-
-#nodes[8].blocked = True <-- This indicates which nodes are blocked off
-calc(nodes[startNode-1], nodes[len(nodes)-1],nodes)
-Dijkstra(nodes[startNode-1], nodes[endNode-1])
-
-### IT ACTUALLY FUCKING WORKS???!!!?!!???!!????!!??!??????!
-###The algo works with walls(fina-fucking-lly) 
-
-###No backtracking
-    
-    
-##Old logs:
-
-#call this function with starting node and goal node to calculate weight per node
-#calc(nodes[0], nodes[len(nodes)-1])
+    return pStr
 
 
-### <Update>
-### Calc() officially sets the cost of movement from start for each and every node,
-### which means I "could" use that to write the algo A* style...
-### For now though, im glad I can finally find distance/cost between two nodes.
-### Im not entirely sure how im gonna use this, or if Im gonna use it even, but I
-### believe it was usefull nonetheless. :3
-### </Update
+#Populate the grid, the first param is Width, the second is Height
+populateGrid(5,5)
+
+#Set start-and endNodes 
+# !!! Dont forget that node[0] -> node.id = 1 !!! IT'S A LIST !!! #
+startNode = 1
+endNode = 25
+
+#Define which nodes will be blocked off
+#nodes[6].blocked = True <-- This indicates which nodes are blocked off, default value is False
+nodes[6].blocked = True
+
+print(Dijkstra(nodes[startNode-1], nodes[endNode-1]))
