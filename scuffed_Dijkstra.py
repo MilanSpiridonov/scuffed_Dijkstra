@@ -45,7 +45,6 @@ nodes = [] #This list contains all the nodes, thats basically the grid
 
 #Populates nodes List
 def populateGrid(w,h):
-    nodes = []
     ctr = 0
     for i in range(-h,0):
         for j in range(w):
